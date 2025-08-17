@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container" id="admin-login">
+    <h2>Admin Login</h2>
+    <input type="text" id="admin-user" placeholder="Admin Username">
+    <input type="password" id="admin-pass" placeholder="Admin Password">
+    <button onclick="adminLogin()">Login</button>
+  </div>
+
+  <div class="container" id="admin-panel" style="display:none;">
+    <h2>Welcome Admin 👑</h2>
+    <p>Manage users, tasks, and withdrawals here.</p>
+    <button onclick="adminLogout()">Logout</button>
+  </div>
+
+  <footer>
+    <p>© 2025 Muhammad Khateeb Ejaz</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
