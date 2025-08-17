@@ -1,1 +1,166 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EarnHub - Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 350px;
+      background: white;
+      padding: 20px;
+      margin: 50px auto;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px #ccc;
+      text-align: center;
+    }
+    input, button {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    button {
+      background: #007bff;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+    .error { color: red; }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .logout {
+      color: yellow;
+      cursor: pointer;
+      float: right;
+    }
+    #dashboard { display: none; padding: 20px; }
+    footer {
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+      background: #222;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>EarnHub</h1>
+</header>
+
+<div class="container" id="authBox">
+  <h2 id="formTitle">Login</h2>
+  <p class="error" id="errorMsg"></p>
+  <input type="text" id="username" placeholder="Full Name" style="display:none;">
+  <input type="email" id="email" placeholder="Email" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <button onclick="submitForm()">Login</button>
+  <p id="toggleText">Don’t have an account? <a href="#" onclick="toggleForm()">Register</a></p>
+</div>
+
+<div id="dashboard">
+  <h2>Welcome, <span id="userName"></span> 🎉</h2>
+  <p><strong>Email:</strong> <span id="userEmail"></span></p>
+  <p><strong>Balance:</strong> <span id="balance">0</span> PKR</p>
+
+  <h3>Tasks</h3>
+  <p>Follow Instagram: +1 PKR</p>
+  <button onclick="earn(1)">Mark Done</button>
+  <p>Subscribe YouTube: +2 PKR</p>
+  <button onclick="earn(2)">Mark Done</button>
+
+  <h3>Withdraw</h3>
+  <button onclick="withdraw()">Withdraw to JazzCash/Easypaisa</button>
+  <br><br>
+  <span class="logout" onclick="logout()">Logout</span>
+</div>
+
+<footer>
+  Muhammad Khateeb Ejaz | Help 24/7 Chat Support
+</footer>
+
+<script>
+  let isRegister = false;
+
+  function toggleForm() {
+    isRegister = !isRegister;
+    document.getElementById("formTitle").innerText = isRegister ? "Register" : "Login";
+    document.getElementById("username").style.display = isRegister ? "block" : "none";
+    document.querySelector("button").innerText = isRegister ? "Register" : "Login";
+    document.getElementById("toggleText").innerHTML = isRegister
+      ? 'Already have an account? <a href="#" onclick="toggleForm()">Login</a>'
+      : 'Don’t have an account? <a href="#" onclick="toggleForm()">Register</a>';
+  }
+
+  function submitForm() {
+    let username = document.getElementById("username").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    if (isRegister) {
+      if (!username || !email || !password) {
+        document.getElementById("errorMsg").innerText = "All fields required!";
+        return;
+      }
+      localStorage.setItem("user", JSON.stringify({username, email, password, balance: 0}));
+      alert("Registration Successful! Please login now.");
+      toggleForm();
+    } else {
+      let user = JSON.parse(localStorage.getItem("user"));
+      if (!user || user.email !== email || user.password !== password) {
+        document.getElementById("errorMsg").innerText = "Invalid email or password!";
+        return;
+      }
+      login(user);
+    }
+  }
+
+  function login(user) {
+    document.getElementById("authBox").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("userName").innerText = user.username;
+    document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("balance").innerText = user.balance;
+  }
+
+  function earn(amount) {
+    let user = JSON.parse(localStorage.getItem("user"));
+    user.balance += amount;
+    localStorage.setItem("user", JSON.stringify(user));
+    document.getElementById("balance").innerText = user.balance;
+    alert("✅ Task completed! Earned " + amount + " PKR");
+  }
+
+  function withdraw() {
+    let user = JSON.parse(localStorage.getItem("user"));
+    if (user.balance < 10) {
+      alert("❌ Minimum 10 PKR required for withdraw.");
+      return;
+    }
+    alert("✅ Withdraw request sent to JazzCash/Easypaisa.");
+    user.balance = 0;
+    localStorage.setItem("user", JSON.stringify(user));
+    document.getElementById("balance").innerText = 0;
+  }
+
+  function logout() {
+    document.getElementById("authBox").style.display = "block";
+    document.getElementById("dashboard").style.display = "none";
+  }
+</script>
+
+</body>
+</html>
